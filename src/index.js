@@ -1,48 +1,20 @@
-//
-// Node tool to dump SVG output into a file.
-//
-
-var fs = require("fs");
-var util = require("util");
-var path = require("path");
-var stream = require("stream");
-
-const PDFDocument = require('pdfkit');
+const fs = require("fs");
+const util = require("util");
+const path = require("path");
+const stream = require("stream");
+const PDFDocument = require("pdfkit");
 const svgToImg = require("svg-to-img");
-
+const pdfjsLib = require("pdfjs-dist/es5/build/pdf.js");
 // HACK few hacks to let PDF.js be loaded not as a module in global space.
 require("./domstubs.js").setStubs(global);
-
-// Run `gulp dist-install` to generate 'pdfjs-dist' npm package files.
-var pdfjsLib = require("pdfjs-dist/es5/build/pdf.js");
-
-// Some PDFs need external cmaps.
-var CMAP_URL = __dirname + "/../node_modules/pdfjs-dist/cmaps/";
-var CMAP_PACKED = true;
 
 const DOWNLOADS = "/Users/imattie/Downloads";
 
 // Loading file from file system into typed array
-var pdfPath = process.argv[2] || `${DOWNLOADS}/PP-1795-1.psd.pdf`;
-var data = new Uint8Array(fs.readFileSync(pdfPath));
+const pdfPath = process.argv[2] || `${DOWNLOADS}/PP-1795-1.psd.pdf`;
+const data = new Uint8Array(fs.readFileSync(pdfPath));
 
-var outputDirectory = __dirname + "/../svgdump";
-
-try {
-  // Note: This creates a directory only one level deep. If you want to create
-  // multiple subdirectories on the fly, use the mkdirp module from npm.
-  fs.mkdirSync(outputDirectory);
-} catch (e) {
-  if (e.code !== "EEXIST") {
-    throw e;
-  }
-}
-
-// Dumps svg outputs to a folder called svgdump
-function getFilePathForPage(pageNum) {
-  var name = path.basename(pdfPath, path.extname(pdfPath));
-  return path.join(outputDirectory, name + "-" + pageNum + ".svg");
-}
+const outputDirectory = __dirname + "/../svgdump";
 
 /**
  * A readable stream which offers a stream representing the serialization of a
@@ -130,8 +102,8 @@ function getMetadata(page) {
 // callback.
 var loadingTask = pdfjsLib.getDocument({
   data: data,
-  cMapUrl: CMAP_URL,
-  cMapPacked: CMAP_PACKED,
+  cMapUrl: __dirname + "/../node_modules/pdfjs-dist/cmaps/",
+  cMapPacked: true,
   fontExtraProperties: true,
 });
 loadingTask.promise
@@ -170,12 +142,10 @@ loadingTask.promise
       svgs,
       `${outputDirectory}/final`,
       metadata);
-  })
-  .then(
+  }).then(
     function () {
       console.log("# End of Document");
     },
     function (err) {
       console.error("Error: " + err);
-    }
-  );
+    });
