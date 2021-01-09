@@ -7,5 +7,12 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Ivan Mattie",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "pdfjs-dist": "^2.5.207",
+    "pdfkit": "^0.11.0",
+    "svg-to-img": "^2.0.9",
+    "svg-to-pdfkit": "^0.1.8"
+  },
+  "devDependencies": {}
 }
