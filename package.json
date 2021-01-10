@@ -1,7 +1,6 @@
 {
   "name": "pdf-detiler",
   "version": "1.0.0",
-  "description": "",
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -17,5 +16,22 @@
     "svg-to-img": "^2.0.9",
     "svg-to-pdfkit": "^0.1.8"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aeolingamenfel/pdf-detiler.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aeolingamenfel/pdf-detiler/issues"
+  },
+  "homepage": "https://github.com/aeolingamenfel/pdf-detiler#readme",
+  "description": "A simple CLI tool for taking tiled PDFs and turning them into one big PDF",
+  "keywords": [
+    "pdf",
+    "tile",
+    "detile",
+    "sewing",
+    "pattern",
+    "mosaic"
+  ]
 }
