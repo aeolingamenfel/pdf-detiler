@@ -1,12 +1,13 @@
 const fs = require("fs");
-const util = require("util");
 const path = require("path");
-const stream = require("stream");
 const PDFDocument = require("pdfkit");
 const svgToImg = require("svg-to-img");
 const pdfjsLib = require("pdfjs-dist/es5/build/pdf.js");
+const ReadableSVGStream = require("./readableSvgStreamExtension");
 // HACK few hacks to let PDF.js be loaded not as a module in global space.
 require("./domstubs.js").setStubs(global);
+
+const ranFromPath = process.cwd();
 
 const DOWNLOADS = "/Users/imattie/Downloads";
 
@@ -15,32 +16,6 @@ const pdfPath = process.argv[2] || `${DOWNLOADS}/PP-1795-1.psd.pdf`;
 const data = new Uint8Array(fs.readFileSync(pdfPath));
 
 const outputDirectory = __dirname + "/../svgdump";
-
-/**
- * A readable stream which offers a stream representing the serialization of a
- * given DOM element (as defined by domstubs.js).
- *
- * @param {object} options
- * @param {DOMElement} options.svgElement The element to serialize
- */
-function ReadableSVGStream(options) {
-  if (!(this instanceof ReadableSVGStream)) {
-    return new ReadableSVGStream(options);
-  }
-  stream.Readable.call(this, options);
-  this.serializer = options.svgElement.getSerializer();
-}
-util.inherits(ReadableSVGStream, stream.Readable);
-// Implements https://nodejs.org/api/stream.html#stream_readable_read_size_1
-ReadableSVGStream.prototype._read = function () {
-  var chunk;
-  while ((chunk = this.serializer.getNext()) !== null) {
-    if (!this.push(chunk)) {
-      return;
-    }
-  }
-  this.push(null);
-};
 
 /**
  * Streams the SVG element to the given file path.
