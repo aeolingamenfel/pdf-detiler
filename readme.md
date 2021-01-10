@@ -44,7 +44,9 @@ directory the CLI was run from.
 ## Questions, Comments, Concerns, Issues
 
 Please feel free to file a new issue on this project's issue tracker
-([link](https://github.com/aeolingamenfel/pdf-detiler/issues)).
+[(link)](https://github.com/aeolingamenfel/pdf-detiler/issues) or by starting
+a new discussion
+[(link)](https://github.com/aeolingamenfel/pdf-detiler/discussions).
 
 ## Contributing
 
