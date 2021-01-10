@@ -1,5 +1,7 @@
 # PDF De-Tiler
 
+[![npm version](https://badge.fury.io/js/pdf-detiler.svg)](https://badge.fury.io/js/pdf-detiler)
+
 Command line tool which takes PDFs which have multiple pages and produces a PDF
 which is just one page, wherein the contents of the page are the contents of the
 input PDF's pages tiled.
