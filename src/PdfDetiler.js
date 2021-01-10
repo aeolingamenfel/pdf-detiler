@@ -161,6 +161,8 @@ class PdfDetiler {
       const fullPath = path.join(this.svgTempDir, filename);
       fs.unlinkSync(fullPath);
     }
+
+    fs.rmdirSync(this.svgTempDir);
   }
 
   /**
