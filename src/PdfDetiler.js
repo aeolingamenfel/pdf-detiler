@@ -70,17 +70,18 @@ class PdfDetiler {
   async detileAndWriteTo(path) {
     const doc = await this.getDocument();
     const numPages = doc.numPages;
-    console.log(
-      `Loaded Document, Number of Pages: ${this.theme.pagesColor(numPages)}`);
     let svgs = [];
-    let metadata = null;
+    let metadata = this.getMetadata(await doc.getPage(1));
+    const computedWidth = (metadata.width / metadata.userUnit) / 72;
+    const computedHeight = (metadata.height / metadata.userUnit) / 72;
+
+    console.log("Loaded document");
+    console.log(`Number of Pages: ......... ${this.theme.pagesColor(numPages)}`);
+    console.log(`Single-page Dimensions: .. ` + this.theme.pagesColor(`${computedWidth}in x ${computedHeight}in`));
+    console.log(`Output Size: ............. ` + this.theme.pagesColor(`${this.columns}x${Math.floor(numPages / this.columns)}`));
 
     var loadPage = (pageNum) => {
       return doc.getPage(pageNum).then((page) => {
-        if (metadata === null) {
-          metadata = this.getMetadata(page);
-        }
-
         const viewport = page.getViewport({scale: 1.0});
         //console.log("# Page " + pageNum, page.userUnit, "Size: " + viewport.width + "x" + viewport.height);
 
