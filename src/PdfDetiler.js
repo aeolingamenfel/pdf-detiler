@@ -19,7 +19,7 @@ class PdfDetiler {
     this.inputPath = inputPath;
     this.columns = columns;
     this.svgTempDir = path.join(process.cwd(), "tmp");
-    this.scale = 4;
+    this.scale = 1;
     // https://lospec.com/palette-list/twilight-5
     this.theme = {
       pagesColor: chalk.hex("#fbbbad"),
@@ -190,7 +190,9 @@ class PdfDetiler {
     const doc = new PDFDocument({autoFirstPage: false});
     doc.addPage({
       size: [
-        metadata.width * this.columns * this.scale,
+        metadata.width
+          * this.columns
+          * this.scale,
         metadata.height
           * Math.floor((svgElements.length / this.columns))
           * this.scale
