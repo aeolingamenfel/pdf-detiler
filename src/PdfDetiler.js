@@ -11,12 +11,13 @@ class PdfDetiler {
 
   /**
    * @param {string} inputPath The path to the PDF file to be detiled.
-   * @param {string?} svgTempDir The path where rendered SVGs are temporarily
-   *  stored. Defaults to tmp/ relative to where the user called this CLI from.
+   * @param {number} columns The amount of columns in the output.
    */
-  constructor(inputPath, svgTempDir = `${process.cwd()}/tmp`) {
+  constructor(inputPath, columns) {
     this.inputPath = inputPath;
-    this.svgTempDir = svgTempDir;
+    this.columns = columns;
+    this.svgTempDir = path.join(process.cwd(), "tmp");
+    this.scale = 4;
 
     this.assertSvgTempDirExists();
   }
@@ -96,14 +97,13 @@ class PdfDetiler {
    * 
    * @param {object[]} svgElements
    * @param {object} metadata
-   * @param {number} scale
    */
-  async writeSvgsAsJpegs(svgElements, metadata, scale) {
+  async writeSvgsAsJpegs(svgElements, metadata) {
     for (const svgIndex in svgElements) {
       const svg = svgElements[svgIndex];
       await svgToImg.from(svg.toString()).toJpeg({
         path: path.join(this.svgTempDir, `rendered-${svgIndex}.jpeg`),
-        width: metadata.width * scale // px
+        width: metadata.width * this.scale // px
       });
     }
   }
@@ -132,14 +132,16 @@ class PdfDetiler {
    * @param {number?} scale
    * @private
    */
-  async writeSvgsToFile(svgElements, filePath, metadata, columns = 5, scale = 4) {
-    await this.writeSvgsAsJpegs(svgElements, metadata, scale);
+  async writeSvgsToFile(svgElements, filePath, metadata) {
+    await this.writeSvgsAsJpegs(svgElements, metadata, this.scale);
 
     const doc = new PDFDocument({autoFirstPage: false});
     doc.addPage({
       size: [
-        metadata.width * columns * scale,
-        metadata.height * Math.floor((svgElements.length / columns)) * scale
+        metadata.width * this.columns * this.scale,
+        metadata.height
+          * Math.floor((svgElements.length / this.columns))
+          * this.scale
       ]
     });
     doc.pipe(fs.createWriteStream(filePath)); // write to PDF
@@ -147,16 +149,16 @@ class PdfDetiler {
     let row = 0;
 
     for (let svgIndex = 0; svgIndex < svgElements.length; svgIndex++) {
-      const column = (svgIndex - (row * columns));
-      let renderX = column * metadata.width * scale;
-      let renderY = (row * metadata.height * scale) - (row / 2);
+      const column = (svgIndex - (row * this.columns));
+      let renderX = column * metadata.width * this.scale;
+      let renderY = (row * metadata.height * this.scale) - (row / 2);
       doc.image(
         path.join(this.svgTempDir, `rendered-${svgIndex}.jpeg`),
         renderX,
         renderY,
-        {width: metadata.width * scale});
+        {width: metadata.width * this.scale});
 
-      if (svgIndex !== 0 && (svgIndex + 1) % columns === 0) {
+      if (svgIndex !== 0 && (svgIndex + 1) % this.columns === 0) {
         row++;
       }
     }
