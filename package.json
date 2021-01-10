@@ -9,6 +9,8 @@
   "author": "Ivan Mattie",
   "license": "ISC",
   "dependencies": {
+    "chalk": "^4.1.0",
+    "cli-progress": "^3.8.2",
     "pdfjs-dist": "^2.5.207",
     "pdfkit": "^0.11.0",
     "really-simple-args": "^1.1.1",

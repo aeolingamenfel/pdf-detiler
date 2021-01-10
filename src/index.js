@@ -42,6 +42,12 @@ const PdfDetiler = require("./PdfDetiler");
       path.basename(inputPath).substr(0, inputPath.length - 4)
         + "_detiled.pdf");
 
+  if (fs.existsSync(outputPath)) {
+    console.log(
+      `I tried to write to ${outputPath}, but it seems to already exist.`);
+    return;
+  }
+
   const detiler = new PdfDetiler(inputPath, columns);
   await detiler.detileAndWriteTo(outputPath);
 })();

@@ -3,6 +3,8 @@ const path = require("path");
 const PDFDocument = require("pdfkit");
 const svgToImg = require("svg-to-img");
 const pdfjsLib = require("pdfjs-dist/es5/build/pdf.js");
+const cliProgress = require("cli-progress");
+const chalk = require("chalk");
 const ReadableSVGStream = require("./readableSvgStreamExtension");
 // HACK few hacks to let PDF.js be loaded not as a module in global space.
 require("./domstubs.js").setStubs(global);
@@ -18,6 +20,15 @@ class PdfDetiler {
     this.columns = columns;
     this.svgTempDir = path.join(process.cwd(), "tmp");
     this.scale = 4;
+    // https://lospec.com/palette-list/twilight-5
+    this.theme = {
+      pagesColor: chalk.hex("#fbbbad"),
+      stepColor: chalk.hex("#fbbbad"),
+      step1Color: chalk.hex("#ee8695"),
+      step2Color: chalk.hex("#4a7a96"),
+      step3Color: chalk.hex("#333f58"),
+      finaleColor: chalk.hex("#fbbbad")
+    };
 
     this.assertSvgTempDirExists();
   }
@@ -59,9 +70,8 @@ class PdfDetiler {
   async detileAndWriteTo(path) {
     const doc = await this.getDocument();
     const numPages = doc.numPages;
-    console.log("# Document Loaded");
-    console.log("Number of Pages: " + numPages);
-    console.log();
+    console.log(
+      `Loaded Document, Number of Pages: ${this.theme.pagesColor(numPages)}`);
     let svgs = [];
     let metadata = null;
 
@@ -72,7 +82,7 @@ class PdfDetiler {
         }
 
         const viewport = page.getViewport({scale: 1.0});
-        console.log("# Page " + pageNum, page.userUnit, "Size: " + viewport.width + "x" + viewport.height);
+        //console.log("# Page " + pageNum, page.userUnit, "Size: " + viewport.width + "x" + viewport.height);
 
         return page.getOperatorList().then(function (opList) {
           var svgGfx = new pdfjsLib.SVGGraphics(page.commonObjs, page.objs);
@@ -84,9 +94,24 @@ class PdfDetiler {
       });
     };
 
-    for (var i = 1; i <= numPages; i++) {
+    const pagesBar =
+      new cliProgress.SingleBar(
+        {
+          format:
+            this.theme.stepColor("Step (1/3)")
+            + `: Processing Pages: ${this.theme.step1Color("{bar}")} {percentage}% | {value}/{total} Pages | ETA: {eta}s`,
+          barCompleteChar: "=",
+          barIncompleteChar: "-",
+        },
+        cliProgress.Presets.shades_classic);
+    pagesBar.start(numPages, 0);
+
+    for (let i = 1; i <= numPages; i++) {
       await loadPage(i);
+      pagesBar.update(i);
     }
+
+    pagesBar.stop();
 
     this.writeSvgsToFile(svgs, path, metadata);
   }
@@ -99,13 +124,27 @@ class PdfDetiler {
    * @param {object} metadata
    */
   async writeSvgsAsJpegs(svgElements, metadata) {
-    for (const svgIndex in svgElements) {
+    const svgsBar =
+      new cliProgress.SingleBar(
+        {
+          format:
+            this.theme.stepColor("Step (2/3)")
+            + `: Rendering Pages:  ${this.theme.step2Color("{bar}")} {percentage}% | {value}/{total} Pages | ETA: {eta}s`,
+          barCompleteChar: "=",
+          barIncompleteChar: "-",
+        },
+        cliProgress.Presets.shades_classic);
+    svgsBar.start(svgElements.length, 0);
+
+    for (let svgIndex = 0; svgIndex < svgElements.length; svgIndex++) {
       const svg = svgElements[svgIndex];
       await svgToImg.from(svg.toString()).toJpeg({
         path: path.join(this.svgTempDir, `rendered-${svgIndex}.jpeg`),
         width: metadata.width * this.scale // px
       });
+      svgsBar.update(svgIndex + 1);
     }
+    svgsBar.stop();
   }
 
   /**
@@ -135,6 +174,18 @@ class PdfDetiler {
   async writeSvgsToFile(svgElements, filePath, metadata) {
     await this.writeSvgsAsJpegs(svgElements, metadata, this.scale);
 
+    const fileBar =
+      new cliProgress.SingleBar(
+        {
+          format:
+            this.theme.stepColor("Step (3/3)")
+            + `: Combining Pages:  ${this.theme.step3Color("{bar}")} {percentage}% | {value}/{total} Pages | ETA: {eta}s`,
+          barCompleteChar: "=",
+          barIncompleteChar: "-",
+        },
+        cliProgress.Presets.shades_classic);
+    fileBar.start(svgElements.length, 0);
+
     const doc = new PDFDocument({autoFirstPage: false});
     doc.addPage({
       size: [
@@ -161,10 +212,15 @@ class PdfDetiler {
       if (svgIndex !== 0 && (svgIndex + 1) % this.columns === 0) {
         row++;
       }
+
+      fileBar.update(svgIndex + 1);
     }
 
+    fileBar.stop();
     doc.end();
     this.cleanupAllSvgJpegs();
+
+    console.log(this.theme.finaleColor(`Wrote ${filePath} successfully!`));
   }
 
   /**
