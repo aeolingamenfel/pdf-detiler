@@ -1,3 +1,4 @@
+#! /usr/bin/env node
 const fs = require("fs");
 const path = require("path");
 const args = require("really-simple-args")();
