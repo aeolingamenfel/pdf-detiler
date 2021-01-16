@@ -3,7 +3,8 @@
   "version": "1.0.2",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "app": "node_modules/.bin/electron src/electron/js/main.js"
   },
   "author": "Ivan Mattie",
   "license": "ISC",
@@ -16,7 +17,9 @@
     "svg-to-img": "^2.0.9",
     "svg-to-pdfkit": "^0.1.8"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "electron": "^11.2.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/aeolingamenfel/pdf-detiler.git"
