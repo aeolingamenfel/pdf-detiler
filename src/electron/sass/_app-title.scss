@@ -1,0 +1,54 @@
+.app-title {
+  font-size: 40px;
+  color: var(--theme-color-2);
+  text-align: center;
+  user-select: none;
+  width: 100%;
+
+  .chars-wrapper {
+    position: relative;
+  }
+
+  .de-chars, .tiler-chars {
+    display: inline-block;
+    border: 1px solid var(--theme-color-3);
+  }
+
+  .de-chars {
+    transform: translateY(-100%);
+    animation: de-chars 700ms ease-out 1200ms forwards;
+  }
+  
+  .tiler-chars {
+    transform: translateX(-43px);
+    animation: tiler-chars 700ms ease-out 500ms forwards;
+  }
+}
+
+@keyframes de-chars {
+  0% {
+    transform: translateY(-100%);
+  }
+  50% {
+    transform: translateY(0%);
+    border: 1px solid var(--theme-color-3);
+  }
+  100% {
+    transform: translateY(0%);
+    border: 1px solid transparent;
+  }
+}
+
+@keyframes tiler-chars {
+  0% {
+    transform: translateX(-43px);
+  }
+  50% {
+    transform: translateX(0px);
+    border: 1px solid var(--theme-color-3);
+  }
+  100% {
+    transform: translateX(0px);
+    border: 1px solid transparent;
+  }
+}

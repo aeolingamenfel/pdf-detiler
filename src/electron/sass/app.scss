@@ -23,4 +23,14 @@ body {
   background: var(--theme-color-1);
 }
 
+main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  flex-direction: column;
+}
+
 @import "window-header";
+@import "app-title";
+@import "file-dropzone";
