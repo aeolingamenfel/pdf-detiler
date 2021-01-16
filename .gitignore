@@ -2,3 +2,6 @@
 node_modules/
 svgdump/
 tmp/
+
+# Electron build files
+src/electron/html/css/

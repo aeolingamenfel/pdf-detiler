@@ -3,8 +3,10 @@
   "version": "1.0.2",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "app": "node_modules/.bin/electron src/electron/js/main.js"
+    "build": "node_modules/.bin/gulp",
+    "watch": "node_modules/.bin/gulp watch",
+    "app": "node_modules/.bin/electron src/electron/js/main.js",
+    "devapp": "npm run build && npm run app"
   },
   "author": "Ivan Mattie",
   "license": "ISC",
@@ -18,7 +20,9 @@
     "svg-to-pdfkit": "^0.1.8"
   },
   "devDependencies": {
-    "electron": "^11.2.0"
+    "electron": "^11.2.0",
+    "gulp": "^4.0.2",
+    "gulp-sass": "^4.1.0"
   },
   "repository": {
     "type": "git",

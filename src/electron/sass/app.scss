@@ -1,0 +1,26 @@
+// https://lospec.com/palette-list/twilight-5
+:root {
+  --theme-color-1: #fbbbad;
+  --theme-color-2: #ee8695;
+  --theme-color-3: #4a7a96;
+  --theme-color-4: #333f58;
+  --theme-color-5: #292831;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  font-family: sans-serif;
+  background: var(--theme-color-1);
+}
+
+@import "window-header";
