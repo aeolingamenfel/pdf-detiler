@@ -5,6 +5,7 @@
   --theme-color-3: #4a7a96;
   --theme-color-4: #333f58;
   --theme-color-5: #292831;
+  --theme-color-5: #368c6b;
 }
 
 * {
@@ -34,3 +35,4 @@ main {
 @import "window-header";
 @import "app-title";
 @import "file-dropzone";
+@import "progress-indicator";
