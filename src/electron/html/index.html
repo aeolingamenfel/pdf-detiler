@@ -17,9 +17,19 @@
           <span class="de-chars">De</span><span class="tiler-chars">Tiler</span>
         </span>
       </section>
-      <section class="file-dropzone">
-        Drop PDF File Here to De-Tile<br />
+      <section class="file-dropzone" id="fileDropzone">
+        <input
+            class="upload-input"
+            type="file"
+            id="fileDataInput"
+            capture=""
+            name="fileData"
+            multiple=""
+            accept="document/pdf">
+        <p class="text">
+          Drop PDF File Here to De-Tile<br />
         <small>(or click to select file)</small>
+        </p>
       </section>
       <section class="progress-indicator">
         <p class="status-text" id="statusText">

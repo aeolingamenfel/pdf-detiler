@@ -5,8 +5,11 @@
 // selectively enable features needed in the rendering
 // process.
 const {ipcRenderer} = require("electron");
+const FileDropzone = require("./../js/controllers/FileDropzone");
 
 (function() {
+  new FileDropzone();
+
   const reply = ipcRenderer.sendSync("test", "foobar");
   console.log(reply);
 })();
