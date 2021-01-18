@@ -1,0 +1,37 @@
+.columns-input {
+  display: flex;
+  margin: 40px 0 0;
+  align-items: center;
+  justify-content: center;
+
+  .label, .input {
+    font-size: 20px;
+  }
+
+  .label {
+    margin: 0 4px 0 0;
+    color: var(--theme-color-4);
+    user-select: none;
+  }
+
+  .input {
+    width: 3em;
+    border: 2px solid var(--theme-color-4);
+    padding: 4px;
+    border-radius: 4px;
+    color: var(--theme-color-3);
+    outline: none;
+    background: transparent;
+    text-align: center;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    &:focus {
+      border: 2px solid var(--theme-color-3);
+    }
+  }
+}

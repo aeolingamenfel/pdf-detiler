@@ -22,7 +22,7 @@ class WindowManager {
     // Create the browser window.
     const mainWindow = new BrowserWindow({
       width: 1200,
-      height: 600,
+      height: 800,
       webPreferences: {
         preload: path.join(__dirname, "..", "preload.js")
       },
