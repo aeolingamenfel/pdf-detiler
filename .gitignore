@@ -5,3 +5,5 @@ tmp/
 
 # Electron build files
 src/electron/html/css/
+
+out/

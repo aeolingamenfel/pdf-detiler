@@ -1,18 +1,22 @@
 {
   "name": "pdf-detiler",
   "version": "1.0.2",
-  "main": "src/index.js",
+  "main": "src/electron/js/main.js",
   "scripts": {
     "build": "node_modules/.bin/gulp",
     "watch": "node_modules/.bin/gulp watch",
     "app": "node_modules/.bin/electron src/electron/js/main.js",
-    "devapp": "npm run build && npm run app"
+    "devapp": "npm run build && npm run app",
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
   },
   "author": "Ivan Mattie",
   "license": "ISC",
   "dependencies": {
     "chalk": "^4.1.0",
     "cli-progress": "^3.8.2",
+    "electron-squirrel-startup": "^1.0.0",
     "pdfjs-dist": "^2.5.207",
     "pdfkit": "^0.11.0",
     "really-simple-args": "^1.1.1",
@@ -20,6 +24,11 @@
     "svg-to-pdfkit": "^0.1.8"
   },
   "devDependencies": {
+    "@electron-forge/cli": "^6.0.0-beta.54",
+    "@electron-forge/maker-deb": "^6.0.0-beta.54",
+    "@electron-forge/maker-rpm": "^6.0.0-beta.54",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.54",
+    "@electron-forge/maker-zip": "^6.0.0-beta.54",
     "electron": "^11.2.0",
     "gulp": "^4.0.2",
     "gulp-sass": "^4.1.0"
@@ -44,5 +53,39 @@
   ],
   "bin": {
     "pdf-detiler": "src/index.js"
+  },
+  "config": {
+    "forge": {
+      "packagerConfig": {
+        "appCopyright": "Copyright 2021 Ivan Mattie",
+        "dir": "src",
+        "name": "PDF DeTiler",
+        "out": "out",
+        "platform": "all",
+        "arch": "all"
+      },
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "pdf_detiler"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin"
+          ]
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/maker-rpm",
+          "config": {}
+        }
+      ]
+    }
   }
 }
