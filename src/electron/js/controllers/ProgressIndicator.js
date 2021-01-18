@@ -61,10 +61,11 @@ class ProgressIndicator {
   }
 
   resetProgressBars() {
+    const baseWaitTime = 600; // ms
     // Reset the progress bars slowly, for style!
-    setTimeout(() => this.step3ProgressBar.reset(), 400);
-    setTimeout(() => this.step2ProgressBar.reset(), 700);
-    setTimeout(() => this.step1ProgressBar.reset(), 1000);
+    setTimeout(() => this.step3ProgressBar.reset(), baseWaitTime);
+    setTimeout(() => this.step2ProgressBar.reset(), baseWaitTime + 300);
+    setTimeout(() => this.step1ProgressBar.reset(), baseWaitTime + 600);
   }
 
   /**
