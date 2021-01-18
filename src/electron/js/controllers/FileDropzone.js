@@ -6,6 +6,7 @@ class FileDropzone {
     this.element = document.getElementById("fileDropzone");
     /** @type {HTMLInputElement} */
     this.fileDataInput = document.getElementById("fileDataInput");
+    this.processingOverlay = this.element.querySelector(".processing-overlay");
     this.bind();
   }
 
@@ -20,6 +21,7 @@ class FileDropzone {
     }
     const fullPath = this.fileDataInput.files[0].path;
     EventSystem.emit("file-selected", fullPath);
+    this.processingOverlay.classList.add("show");
   }
 
   /**
@@ -28,6 +30,7 @@ class FileDropzone {
    */
   onProcessFileComplete() {
     this.fileDataInput.value = null;
+    this.processingOverlay.classList.remove("show");
   }
 
   /**
