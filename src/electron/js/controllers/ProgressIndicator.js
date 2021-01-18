@@ -55,7 +55,16 @@ class ProgressIndicator {
    */
   onProcessFileComplete(outputPath) {
     this.updateState(STATE.WAITING);
+    this.resetProgressBars();
+    EventSystem.emit("process-file-complete");
     console.log(outputPath);
+  }
+
+  resetProgressBars() {
+    // Reset the progress bars slowly, for style!
+    setTimeout(() => this.step3ProgressBar.reset(), 400);
+    setTimeout(() => this.step2ProgressBar.reset(), 700);
+    setTimeout(() => this.step1ProgressBar.reset(), 1000);
   }
 
   /**

@@ -26,6 +26,17 @@ class ProgressBar {
     }
   }
 
+  reset() {
+    this.bar.removeAttribute("style");
+    this.text.classList.remove("up");
+    this.textUp = false;
+    this.text.addEventListener("transitionend", () => {
+      requestAnimationFrame(() => {
+        this.text.textContent = "";
+      });
+    });
+  }
+
 }
 
 module.exports = ProgressBar;

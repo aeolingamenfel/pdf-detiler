@@ -133,7 +133,7 @@ class PdfDetiler {
     pagesBar.stop();
     this.updateParentThread(1, numPages, numPages);
 
-    this.writeSvgsToFile(svgs, path, metadata);
+    await this.writeSvgsToFile(svgs, path, metadata);
   }
 
   /**

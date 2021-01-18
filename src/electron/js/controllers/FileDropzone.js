@@ -23,6 +23,14 @@ class FileDropzone {
   }
 
   /**
+   * Called automatically when the file has been completely processed.
+   * @private
+   */
+  onProcessFileComplete() {
+    this.fileDataInput.value = null;
+  }
+
+  /**
    * Called when a file is dropped on this element.
    * @param {DragEvent} e
    * @private
@@ -59,6 +67,9 @@ class FileDropzone {
     this.element.addEventListener("drop", (e) => this.onDrop(e));
     this.element.addEventListener("dragenter", (e) => this.onDragEnter(e));
     this.element.addEventListener("dragleave", (e) => this.onDragLeave(e));
+    EventSystem.on("process-file-complete", () => {
+      this.onProcessFileComplete();
+    });
   }
 
 }
