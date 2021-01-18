@@ -56,6 +56,29 @@ class ProgressIndicator {
   }
 
   /**
+   * Called automatically when the file processing thread has sent an update
+   * on its progress.
+   * @param {{step: number, progress: number, progressMax: number}} data
+   * @private
+   */
+  onProcessFileProcessingStatusUpdate(data) {
+    switch (data.step) {
+      case 1:
+        this.updateState(STATE.STEP_1);
+        break;
+      case 2:
+        this.updateState(STATE.STEP_2);
+        break;
+      case 3:
+        this.updateState(STATE.STEP_3);
+        break;
+      default:
+        throw new Error(
+          `Bad step number recieved from runner thread: ${data.step}`);
+    }
+  }
+
+  /**
    * @param {object} newValue
    * @private
    */
@@ -114,6 +137,9 @@ class ProgressIndicator {
     });
     ipcRenderer.on("process-file-complete", (e, args) => {
       this.onProcessFileComplete(args);
+    });
+    ipcRenderer.on("process-file-processing-status-update", (e, args) => {
+      this.onProcessFileProcessingStatusUpdate(args);
     });
   }
 

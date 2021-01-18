@@ -5,6 +5,7 @@ const svgToImg = require("svg-to-img");
 const pdfjsLib = require("./pdfjs/pdf");
 const cliProgress = require("cli-progress");
 const chalk = require("chalk");
+const {isMainThread, parentPort, workerData} = require("worker_threads");
 const ReadableSVGStream = require("./readableSvgStreamExtension");
 // HACK few hacks to let PDF.js be loaded not as a module in global space.
 require("./domstubs.js").setStubs(global);
@@ -31,6 +32,22 @@ class PdfDetiler {
     };
 
     this.assertSvgTempDirExists();
+  }
+
+  /**
+   * Sends an update as to the progress of the DeTiler to the parent thread,
+   * if there is one.
+   * @param {number} step
+   * @param {number} progress
+   * @param {number} progressMax
+   * @private
+   */
+  updateParentThread(step, progress, progressMax) {
+    if (isMainThread) {
+      return;
+    }
+
+    parentPort.postMessage({step, progress, progressMax});
   }
 
   /**
@@ -83,8 +100,6 @@ class PdfDetiler {
     var loadPage = (pageNum) => {
       return doc.getPage(pageNum).then((page) => {
         const viewport = page.getViewport({scale: 1.0});
-        //console.log("# Page " + pageNum, page.userUnit, "Size: " + viewport.width + "x" + viewport.height);
-
         return page.getOperatorList().then(function (opList) {
           var svgGfx = new pdfjsLib.SVGGraphics(page.commonObjs, page.objs);
           svgGfx.embedFonts = true;
@@ -105,14 +120,18 @@ class PdfDetiler {
           barIncompleteChar: "-",
         },
         cliProgress.Presets.shades_classic);
+    
     pagesBar.start(numPages, 0);
+    this.updateParentThread(1, 0, numPages);
 
     for (let i = 1; i <= numPages; i++) {
       await loadPage(i);
       pagesBar.update(i);
+      this.updateParentThread(1, i, numPages);
     }
 
     pagesBar.stop();
+    this.updateParentThread(1, numPages, numPages);
 
     this.writeSvgsToFile(svgs, path, metadata);
   }
@@ -135,7 +154,9 @@ class PdfDetiler {
           barIncompleteChar: "-",
         },
         cliProgress.Presets.shades_classic);
+    
     svgsBar.start(svgElements.length, 0);
+    this.updateParentThread(2, 0, svgElements.length);
 
     for (let svgIndex = 0; svgIndex < svgElements.length; svgIndex++) {
       const svg = svgElements[svgIndex];
@@ -144,8 +165,10 @@ class PdfDetiler {
         width: metadata.width * this.scale // px
       });
       svgsBar.update(svgIndex + 1);
+      this.updateParentThread(2, svgIndex + 1, svgElements.length);
     }
     svgsBar.stop();
+    this.updateParentThread(2, svgElements.length, svgElements.length);
   }
 
   /**
@@ -187,7 +210,9 @@ class PdfDetiler {
           barIncompleteChar: "-",
         },
         cliProgress.Presets.shades_classic);
+    
     fileBar.start(svgElements.length, 0);
+    this.updateParentThread(3, 0, svgElements.length);
 
     const doc = new PDFDocument({autoFirstPage: false});
     doc.addPage({
@@ -219,9 +244,11 @@ class PdfDetiler {
       }
 
       fileBar.update(svgIndex + 1);
+      this.updateParentThread(3, svgIndex + 1, svgElements.length);
     }
 
     fileBar.stop();
+    this.updateParentThread(3, svgElements.length, svgElements.length);
     doc.end();
     this.cleanupAllSvgJpegs();
 

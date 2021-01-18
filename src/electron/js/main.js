@@ -27,8 +27,7 @@ ipcMain.on("process-file", async (event, arg) => {
       return;
     }
 
-    // do something else?
-    console.log(value);
+    event.sender.send("process-file-processing-status-update", value);
   });
   worker.on("error", (e) => {
     console.warn("Error on process", e);
