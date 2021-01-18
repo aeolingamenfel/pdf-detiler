@@ -64,9 +64,9 @@ class FileDropzone {
   bind() {
     this.fileDataInput.addEventListener(
       "change", (e) => this.onFileInputChange(e));
-    this.element.addEventListener("drop", (e) => this.onDrop(e));
-    this.element.addEventListener("dragenter", (e) => this.onDragEnter(e));
-    this.element.addEventListener("dragleave", (e) => this.onDragLeave(e));
+    this.fileDataInput.addEventListener("drop", (e) => this.onDrop(e));
+    this.fileDataInput.addEventListener("dragenter", (e) => this.onDragEnter(e));
+    this.fileDataInput.addEventListener("dragleave", (e) => this.onDragLeave(e));
     EventSystem.on("process-file-complete", () => {
       this.onProcessFileComplete();
     });
