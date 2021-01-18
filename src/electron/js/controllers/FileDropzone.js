@@ -1,3 +1,5 @@
+const EventSystem = require("./../events/EventSystem");
+
 class FileDropzone {
 
   constructor() {
@@ -16,7 +18,8 @@ class FileDropzone {
     if (this.fileDataInput.files.length < 1) {
       return;
     }
-    console.log(this.fileDataInput.files[0].path);
+    const fullPath = this.fileDataInput.files[0].path;
+    EventSystem.emit("file-selected", fullPath);
   }
 
   /**
