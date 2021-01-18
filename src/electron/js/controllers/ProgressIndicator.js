@@ -1,4 +1,5 @@
 const EventSystem = require("./../events/EventSystem");
+const {ipcRenderer} = require("electron");
 
 class ProgressIndicator {
 
@@ -21,7 +22,16 @@ class ProgressIndicator {
     const fullFilePath = e.payload;
     const columns = parseInt(this.columnsInput.value);
 
-    console.log(fullFilePath, columns);
+    this.processFile(fullFilePath, columns);
+  }
+
+  /**
+   * @param {string} fullFilePath
+   * @param {number} columns
+   * @private
+   */
+  processFile(fullFilePath, columns) {
+    ipcRenderer.send("process-file", {fullFilePath, columns});
   }
 
   /**
