@@ -4,6 +4,8 @@ class ProgressIndicator {
 
   constructor() {
     this.element = document.getElementById("progressIndicator");
+    /** @type {HTMLInputElement} */
+    this.columnsInput = document.getElementById("columnsInput");
     this.bind();
   }
 
@@ -11,7 +13,15 @@ class ProgressIndicator {
    * @private
    */
   onFileSelected(e) {
-    console.log(e.payload);
+    if (this.columnsInput.value.trim() === "") {
+      alert("Please specify a column value!");
+      return;
+    }
+
+    const fullFilePath = e.payload;
+    const columns = parseInt(this.columnsInput.value);
+
+    console.log(fullFilePath, columns);
   }
 
   /**
