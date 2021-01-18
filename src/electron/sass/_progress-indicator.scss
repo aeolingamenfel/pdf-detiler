@@ -26,19 +26,76 @@
       --border-radius: 6px;
       flex: 0 0 33.333%;
       height: 12px;
-      background: var(--theme-color-4);
+      position: relative;
+
+      &:before {
+        content: "";
+        position: absolute;
+        z-index: 2;
+        background: #FCCEC3;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+      }
 
       &:first-of-type {
-        border-radius: var(--border-radius) 0 0 var(--border-radius);
+        &:before {
+          border-radius: var(--border-radius) 0 0 var(--border-radius);
+        }
+
+        .bar {
+          border-radius: var(--border-radius) 0 0 var(--border-radius);
+          background: var(--theme-color-2);
+        }
       }
 
       // There are always only 3, so this is therefore always the middle one
       &:nth-of-type(2) {
         margin: 0 2px;
+
+        .bar {
+          background: var(--theme-color-3);
+        }
       }
 
       &:last-of-type {
-        border-radius: 0 var(--border-radius) var(--border-radius) 0;
+        &:before {
+          border-radius: 0 var(--border-radius) var(--border-radius) 0;
+        }
+
+        .bar {
+          border-radius: 0 var(--border-radius) var(--border-radius) 0;
+          background: var(--theme-color-4);
+        }
+      }
+
+      .bar {
+        position: absolute;
+        z-index: 3;
+        top: 0px;
+        left: 0px;
+        width: 0%;
+        height: 100%;
+        transform-origin: left center;
+        transition: width 200ms linear;
+      }
+
+      .text {
+        position: absolute;
+        z-index: 1;
+        top: 50%;
+        left: 0%;
+        width: 100%;
+        height: auto;
+        text-align: center;
+        font-size: 12px;
+        transform: translateY(-50%);
+        transition: transform 350ms ease;
+
+        &.up {
+          transform: translateY(-150%);
+        }
       }
     }
   }

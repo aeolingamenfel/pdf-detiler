@@ -1,5 +1,6 @@
 const EventSystem = require("./../events/EventSystem");
 const {ipcRenderer} = require("electron");
+const ProgressBar = require("./ProgressBar");
 
 const STATE = {
   WAITING: 0,
@@ -16,6 +17,9 @@ class ProgressIndicator {
     this.columnsInput = document.getElementById("columnsInput");
     this.stepTextEl = this.element.querySelector(".step-text");
     this.messageEl = this.element.querySelector(".message");
+    this.step1ProgressBar = new ProgressBar(this.element.querySelector(".loading-bar .subsection:nth-of-type(1)"));
+    this.step2ProgressBar = new ProgressBar(this.element.querySelector(".loading-bar .subsection:nth-of-type(2)"));
+    this.step3ProgressBar = new ProgressBar(this.element.querySelector(".loading-bar .subsection:nth-of-type(3)"));
     this.state = STATE.WAITING;
     this.bind();
   }
@@ -42,7 +46,6 @@ class ProgressIndicator {
    */
   processFile(fullFilePath, columns) {
     ipcRenderer.send("process-file", {fullFilePath, columns});
-    this.updateState(STATE.STEP_1);
   }
 
   /**
@@ -65,12 +68,15 @@ class ProgressIndicator {
     switch (data.step) {
       case 1:
         this.updateState(STATE.STEP_1);
+        this.step1ProgressBar.update(data.progress, data.progressMax, "Pages");
         break;
       case 2:
         this.updateState(STATE.STEP_2);
+        this.step2ProgressBar.update(data.progress, data.progressMax, "Pages");
         break;
       case 3:
         this.updateState(STATE.STEP_3);
+        this.step3ProgressBar.update(data.progress, data.progressMax, "Tiles");
         break;
       default:
         throw new Error(
