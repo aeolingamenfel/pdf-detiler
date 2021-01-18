@@ -8,10 +8,6 @@ const {ipcRenderer} = require("electron");
 const FileDropzone = require("./../js/controllers/FileDropzone");
 const ProgressIndicator = require("./../js/controllers/ProgressIndicator");
 
-ipcRenderer.on("process-file-complete", (e, args) => {
-  console.log(args);
-});
-
 (function() {
   new FileDropzone();
   new ProgressIndicator();

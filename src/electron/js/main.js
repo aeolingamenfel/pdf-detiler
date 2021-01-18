@@ -3,8 +3,11 @@ const {ipcMain} = require("electron");
 const WindowManager = require("./system/WindowManager");
 const fs = require("fs");
 const path = require("path");
-const PdfDetiler = require("./../../PdfDetiler");
+const {Worker} = require('worker_threads');
 
+// Events for this should come exclusively from
+// controllers/ProgressIndicator.j, which sends "process-file" requests when it
+// got a file from the user to process.
 ipcMain.on("process-file", async (event, arg) => {
   const {fullFilePath, columns} = arg;
 
@@ -14,10 +17,27 @@ ipcMain.on("process-file", async (event, arg) => {
     path.join(
       dirName, fileName.substr(0, fileName.length - 4) + "_detiled.pdf");
 
-  const detiler = new PdfDetiler(fullFilePath, columns);
-  await detiler.detileAndWriteTo(outputPath);
+  const worker = new Worker(path.join(__dirname, "process-file-thread.js"), {
+    workerData: {fullFilePath, columns, outputPath}
+  });
 
-  ipcMain.emit("process-file-complete", outputPath);
+  worker.on("message", (value) => {
+    if (value.done) {
+      event.sender.send("process-file-complete", outputPath);
+      return;
+    }
+
+    // do something else?
+    console.log(value);
+  });
+  worker.on("error", (e) => {
+    console.warn("Error on process", e);
+  });
+  worker.on("exit", (code) => {
+    if (code !== 0) {
+      throw new Error(`Worker stopped with exit code ${code}`);
+    }
+  });
 });
 
 // WindowManager automatically generates the first window of the app at the
