@@ -4,6 +4,10 @@ const WindowManager = require("./system/WindowManager");
 const fs = require("fs");
 const path = require("path");
 const {Worker} = require('worker_threads');
+require("update-electron-app")({
+  repo: "aeolingamenfel/pdf-detiler",
+  updateInterval: "1 hour"
+});
 
 // Events for this should come exclusively from
 // controllers/ProgressIndicator.j, which sends "process-file" requests when it

@@ -21,7 +21,8 @@
     "pdfkit": "^0.11.0",
     "really-simple-args": "^1.1.1",
     "svg-to-img": "^2.0.9",
-    "svg-to-pdfkit": "^0.1.8"
+    "svg-to-pdfkit": "^0.1.8",
+    "update-electron-app": "^2.0.1"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.54",
@@ -55,6 +56,10 @@
     "pdf-detiler": "src/index.js"
   },
   "config": {
+    "respository": {
+      "name": "pdf-detiler",
+      "owner": "aeolingamenfel"
+    },
     "forge": {
       "packagerConfig": {
         "appCopyright": "Copyright 2021 Ivan Mattie",
